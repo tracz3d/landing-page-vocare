@@ -1,0 +1,35 @@
+{
+  "kpis": {
+    "vendas": {
+      "label": "Base de cálculo IVA (Vendas)",
+      "value": 13920769.18,
+      "currency": "R$"
+    },
+    "compras": {
+      "label": "Base de cálculo IVA (Compras)",
+      "value": 12027279.08,
+      "currency": "R$"
+    }
+  },
+  "chartData": [
+    { "year": 2025, "impostoDevido": 450, "creditoReal": 280, "creditoSN": 0, "impostoAPagar": 170 },
+    { "year": 2026, "impostoDevido": 450, "creditoReal": 280, "creditoSN": 0, "impostoAPagar": 170 },
+    { "year": 2027, "impostoDevido": 430, "creditoReal": 240, "creditoSN": 20, "impostoAPagar": 170 },
+    { "year": 2028, "impostoDevido": 430, "creditoReal": 240, "creditoSN": 20, "impostoAPagar": 170 },
+    { "year": 2029, "impostoDevido": 460, "creditoReal": 260, "creditoSN": 30, "impostoAPagar": 170 },
+    { "year": 2030, "impostoDevido": 480, "creditoReal": 280, "creditoSN": 40, "impostoAPagar": 160 },
+    { "year": 2031, "impostoDevido": 520, "creditoReal": 320, "creditoSN": 50, "impostoAPagar": 150 },
+    { "year": 2032, "impostoDevido": 560, "creditoReal": 360, "creditoSN": 60, "impostoAPagar": 140 },
+    { "year": 2033, "impostoDevido": 750, "creditoReal": 580, "creditoSN": 80, "impostoAPagar": 90 }
+  ],
+  "toggleScenarios": {
+    "scenarioA": {
+      "name": "Cenário Atual",
+      "description": "Baseado na operação padrão sem otimização ARK."
+    },
+    "scenarioB": {
+      "name": "Cenário Otimizado ARK",
+      "description": "Utilizando a Arquitetura de Recuperação Tributária."
+    }
+  }
+}
