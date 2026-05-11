@@ -12,7 +12,7 @@ Este documento consolida a identidade visual da ARK para uso na construção da 
 | **Secondary (Grayish Blue)** | `#9DADC7` | Elementos de suporte, bordas e ícones. |
 | **Background** | `#FFFFFF` | Fundo principal das páginas. |
 
-## 🔠 Tipografia
+## 📖 Tipografia
 
 - **Fonte Principal:** [Montserrat](https://fonts.google.com/specimen/Montserrat) (Heading & Paragraph)
 - **Fonte de Fallback:** Arial, Helvetica, sans-serif
@@ -33,7 +33,7 @@ Os seguintes ativos foram identificados e devem ser utilizados conforme o contex
 > [!NOTE]
 > Os arquivos de imagem enviados no chat devem ser movidos para a pasta `assets/brand/` para garantir que o código da Landing Page os localize corretamente.
 
-## 🏗️ Componentes Pré-definidos
+## 🧱 Componentes Pré-definidos
 
 ### Botão Primário (Pill)
 - **Background:** `#1E64BA`

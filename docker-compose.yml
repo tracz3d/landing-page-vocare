@@ -1,5 +1,12 @@
 services:
-  web:
+  landing-page:
     build: .
     ports:
-      - "8080:80"
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules # Impede que o node_modules local (Windows) sobrescreva o do container (Linux)
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Auxilia o watcher em sistemas Windows
+    stdin_open: true
+    tty: true
