@@ -7,20 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#04070A',
+        background: '#0A0F14',
         surface: '#141F28',
-        primary: '#E2E8F0',
-        secondary: '#94A3B8',
+        primary: '#DDE3ED',
         accent: '#1E64BA',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Playfair Display', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+        drama: ['Montserrat', 'sans-serif'], // Using Montserrat for drama too, as requested
       },
-      lineHeight: {
-        'tight-compressed': '1.15',
-        'relaxed-body': '1.65',
-      }
     },
   },
   plugins: [],

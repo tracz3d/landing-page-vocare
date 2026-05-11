@@ -1,22 +1,24 @@
-## Build stage
-FROM node:22-alpine AS build
+# Estágio de Build
+FROM node:20-alpine AS build
 
 WORKDIR /app
-
-# Install deps (better layer caching)
 COPY package.json package-lock.json ./
-RUN npm ci
-
-# Build
+RUN npm install
 COPY . .
 RUN npm run build
 
-## Runtime stage (static hosting)
-FROM nginx:1.27-alpine AS runtime
+# Estágio de Produção (Servindo com um servidor leve)
+FROM node:20-alpine
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
+# Instala um servidor estático simples
+RUN npm install -g serve
 
-EXPOSE 80
+# Copia apenas o que é necessário do estágio de build
+COPY --from=build /app/dist ./dist
+# Garante que a pasta public foi processada (o Vite faz isso automaticamente para o dist)
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 5173
+
+# Serve a pasta dist na porta 5173
+CMD ["serve", "-s", "dist", "-l", "5173"]

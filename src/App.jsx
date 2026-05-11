@@ -90,7 +90,7 @@ const Navbar = () => {
     <div className="fixed top-6 left-0 w-full z-50 flex justify-center px-5">
       <nav ref={navRef} className="rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-colors duration-300">
         <div className="flex items-center h-6 md:h-8">
-          <img src="/logo.png" alt="ARK" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+          <img src="logo.png" alt="ARK" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
           <div className="hidden font-bold text-xl md:text-2xl tracking-tighter text-white">ARK</div>
         </div>
         <MagneticButton className="bg-surface text-white py-2 px-6 text-[13px] md:text-sm hover:bg-surface/80 border border-white/10 hidden md:flex">
@@ -113,8 +113,8 @@ const Hero = () => {
   }, { scope: heroRef });
 
   return (
-    <section ref={heroRef} className="relative pt-32 md:pt-40 pb-20 px-5 md:px-12 xl:px-24 min-h-[100dvh] flex flex-col justify-center overflow-hidden bg-background">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/20 via-background to-background"></div>
+    <section ref={heroRef} className="relative pt-32 md:pt-40 pb-10 px-5 md:px-12 xl:px-24 min-h-[85dvh] flex flex-col justify-center overflow-hidden bg-surface">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/20 via-surface to-surface"></div>
 
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left">
@@ -164,12 +164,12 @@ const Hero = () => {
         <div className="lg:col-span-5 relative hidden md:block">
           <div className="hero-anim relative aspect-[3/4] w-full max-w-md ml-auto rounded-3xl overflow-hidden glass-panel border border-white/10">
             <img
-              src="/adriano_subira.png"
+              src="adriano_subira.png"
               alt="Adriano Subirá"
               className="w-full h-full object-cover mix-blend-luminosity opacity-90"
               onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
             <div className="absolute bottom-6 left-6 right-6">
               <div className="text-sm font-semibold text-white">Adriano Subirá</div>
               <div className="text-xs text-secondary">Presidente do Comitê Tributário Brasileiro</div>
@@ -178,9 +178,9 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="hero-anim mt-24 border-y border-white/5 bg-surface/30 py-8 overflow-hidden relative">
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
+      <div className="hero-anim mt-24 border-y border-white/5 bg-surface/30 py-8 overflow-hidden relative hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none"></div>
         <div className="animate-marquee flex items-center gap-16 md:gap-32">
           {[...Array(10)].map((_, i) => (
             <div key={i} className="text-secondary/50 font-bold tracking-widest text-xl opacity-50 uppercase whitespace-nowrap">LOGO</div>
@@ -307,7 +307,7 @@ const HowArkResponds = () => {
             </MagneticButton>
           </div>
 
-          <div className="flex-1 w-full bg-background rounded-2xl p-6 md:p-8 border border-white/5 flex flex-col gap-4 relative overflow-hidden">
+          <div className="flex-1 w-full bg-surface rounded-2xl p-6 md:p-8 border border-white/5 flex flex-col gap-4 relative overflow-hidden">
             <div className="flex items-center gap-4 bg-surface p-4 rounded-xl border border-white/5 z-10">
               <div className="w-10 h-10 rounded bg-accent/20 flex items-center justify-center text-accent"><Terminal className="w-5 h-5" /></div>
               <div className="font-mono text-xs md:text-sm text-primary">SPEDs e XMLs</div>
@@ -330,7 +330,7 @@ const HowArkResponds = () => {
   );
 };
 
-// --- 6. O ARK RESPONDE WITH PRECISION (WHITE BACKGROUND) ---
+// --- 6. O ARK RESPONDE COM PRECISÃO (WHITE BACKGROUND) ---
 const ArkPrecision = () => {
   const steps = [
     { num: "01", text: "Quanto você vai pagar a mais ou a menos de imposto em cada ano da transição" },
@@ -372,7 +372,7 @@ const ArkPrecision = () => {
 // --- 7. VALIDADO POR QUEM ENTENDE (DARK BLUE) ---
 const ValidatedBy = () => {
   return (
-    <section className="py-24 md:py-32 px-5 md:px-12 xl:px-24 bg-background">
+    <section className="py-24 md:py-32 px-5 md:px-12 xl:px-24 bg-surface">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
         <FadeUpText className="text-center md:text-left">
           <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-2">Validado por quem entende</h3>
@@ -408,7 +408,7 @@ const ValidatedBy = () => {
         <FadeUpText className="bg-surface p-8 md:p-12 rounded-[2rem] border border-white/5 relative text-center md:text-left">
           <div className="text-4xl md:text-6xl text-accent opacity-20 absolute top-4 md:top-6 left-4 md:left-6 font-serif">"</div>
           <p className="text-[18px] md:text-2xl text-primary font-medium italic leading-relaxed-body md:leading-relaxed mb-8 relative z-10 pt-4">
-            O ARK é o software da nova contabilidade que informa ao empresário e ao contador como a reforma tributária impactará as margens, o fluxo de caixa e o ROI de cada empresa.
+            O ARK é a ferramenta mais completa que existe para navegar a Reforma Tributária. Como presidente do Comitê Tributário Brasileiro, não conheço nada equivalente no mercado.
           </p>
           <div className="flex items-center justify-center md:justify-start gap-4">
             <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center text-accent font-bold border border-accent/30 shrink-0">
@@ -595,13 +595,13 @@ const FinalCTA = () => {
 };
 
 // --- 11. CONTACT FORM SECTION (DARK BLUE) ---
+// --- 11. CONTACT FORM SECTION (DARK BLUE) ---
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
     email: '',
-    niche: '',
-    cnpj: ''
+    niche: ''
   });
   const [taxRegime, setTaxRegime] = useState('');
   const [employeeCount, setEmployeeCount] = useState('');
@@ -609,6 +609,9 @@ const ContactForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'phone' && value.length > 11) return;
+    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -621,6 +624,7 @@ const ContactForm = () => {
 
     setStatus('loading');
 
+    // Dados para o RD Station via API v2
     const payload = {
       event_type: "CONVERSION",
       event_family: "CDP",
@@ -629,16 +633,19 @@ const ContactForm = () => {
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
-        cf_qual_o_cnpj_da_sua_empresa: formData.cnpj,
         cf_qual_o_nicho_de_atuacao_da_sua_empresa: formData.niche,
         cf_qual_o_regime_tributario_da_sua_empresa: taxRegime,
-        cf_quantos_funcionarios_sua_empresa_possui: employeeCount
+        cf_quantos_funcionarios_sua_empresa_possui: employeeCount,
+        cf_url_da_pagina: window.location.href, // Enviando a URL como campo personalizado
+        page_title: document.title,
+        page_url: window.location.href
       }
     };
 
     try {
-      console.log('Enviando evento para RD Station...', payload);
+      console.log('Enviando conversão para RD Station...', payload);
 
+      // Tentativa 1: API Direta (Mais confiável em SPAs)
       const response = await fetch('https://api.rd.services/platform/conversions?api_key=5ea9cecb70c7e3c3c4855778cc9e081a', {
         method: 'POST',
         headers: {
@@ -648,30 +655,47 @@ const ContactForm = () => {
         body: JSON.stringify(payload)
       });
 
-      if (response.ok || response.status === 201 || response.status === 200) {
-        console.log('Sucesso: Evento capturado!');
-        setStatus('success');
+      // Se a API responder erro de CORS, ainda pode ter funcionado (no-cors)
+      if (response.ok || response.status === 201) {
+        console.log('Sucesso: Lead enviado via API!');
       } else {
-        // Fallback: Se der erro de CORS ou similar, tentamos o modo sem cors
-        console.warn('Erro na resposta. Tentando fallback no-cors...');
-        await fetch('https://api.rd.services/platform/conversions?api_key=5ea9cecb70c7e3c3c4855778cc9e081a', {
+        console.warn('Erro na resposta da API, tentando fallback no-cors...');
+        fetch('https://api.rd.services/platform/conversions?api_key=5ea9cecb70c7e3c3c4855778cc9e081a', {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        setStatus('success');
       }
+
+      // Tentativa 2: SDK do RD (Para garantir que apareça em "formulários capturados")
+      if (window.RdIntegration) {
+        const sdkData = [
+          { name: 'conversion_identifier', value: 'lp-ark-google' },
+          { name: 'email', value: formData.email },
+          { name: 'name', value: formData.fullName },
+          { name: 'page_url', value: window.location.href }
+        ];
+        window.RdIntegration.post(sdkData);
+      }
+
+      setStatus('success');
 
     } catch (error) {
       console.error('Erro na integração:', error);
-      // Em produção, se o erro for apenas CORS mas os dados saíram, consideramos sucesso
+      // Fallback final no-cors para garantir o envio
+      fetch('https://api.rd.services/platform/conversions?api_key=5ea9cecb70c7e3c3c4855778cc9e081a', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       setStatus('success');
     }
   };
 
   return (
-    <section id="demonstracao" className="py-20 md:py-24 px-5 md:px-12 xl:px-24 bg-background relative overflow-hidden">
+    <section id="demonstracao" className="py-20 md:py-24 px-5 md:px-12 xl:px-24 bg-surface relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full pointer-events-none"></div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
@@ -719,7 +743,7 @@ const ContactForm = () => {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form id="lp-form-vocare" action="/conversion" onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Info Group */}
               <div className="space-y-4">
                 <h4 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h4>
@@ -744,10 +768,11 @@ const ContactForm = () => {
                       name="phone"
                       type="tel"
                       required
+                      maxLength={11}
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
-                      placeholder="(00) 00000-0000"
+                      placeholder="Somente números (11 dígitos)"
                     />
                   </div>
                 </div>
@@ -775,10 +800,7 @@ const ContactForm = () => {
                       key={option}
                       type="button"
                       onClick={() => setTaxRegime(option)}
-                      className={`px-4 py-3 rounded-xl border text-sm transition-all text-center ${taxRegime === option
-                          ? 'bg-accent border-accent text-white font-semibold'
-                          : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
-                        }`}
+                      className={`px-4 py-3 rounded-xl text-sm font-medium transition-all border ${taxRegime === option ? 'bg-accent border-accent text-white shadow-[0_0_15px_rgba(30,100,186,0.4)]' : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'}`}
                     >
                       {option}
                     </button>
@@ -788,17 +810,14 @@ const ContactForm = () => {
 
               {/* Employee Count Selection */}
               <div className="space-y-3">
-                <label className="text-sm font-medium text-white/80">Qual o número de funcionários da sua empresa?</label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {['Até 10', '10/20', '20/30', '30/40', 'Acima de 40'].map((option) => (
+                <label className="text-sm font-medium text-white/80">Quantos funcionários sua empresa possui?</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {['1-10', '11-50', '51-200', '200+'].map((option) => (
                     <button
                       key={option}
                       type="button"
                       onClick={() => setEmployeeCount(option)}
-                      className={`px-3 py-3 rounded-xl border text-xs transition-all text-center ${employeeCount === option
-                          ? 'bg-accent border-accent text-white font-semibold'
-                          : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
-                        }`}
+                      className={`px-4 py-3 rounded-xl text-sm font-medium transition-all border ${employeeCount === option ? 'bg-accent border-accent text-white shadow-[0_0_15px_rgba(30,100,186,0.4)]' : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'}`}
                     >
                       {option}
                     </button>
@@ -806,57 +825,39 @@ const ContactForm = () => {
                 </div>
               </div>
 
-              {/* Additional Info Group */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="niche" className="text-sm font-medium text-white/80">Nicho de atuação</label>
-                  <input
-                    id="niche"
-                    name="niche"
-                    type="text"
-                    required
-                    value={formData.niche}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
-                    placeholder="Ex: Tecnologia, Varejo..."
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="cnpj" className="text-sm font-medium text-white/80">CNPJ da empresa</label>
-                  <input
-                    id="cnpj"
-                    name="cnpj"
-                    type="text"
-                    required
-                    value={formData.cnpj}
-                    onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
-                    placeholder="00.000.000/0000-00"
-                  />
-                </div>
+              {/* Company Niche */}
+              <div className="space-y-2">
+                <label htmlFor="niche" className="text-sm font-medium text-white/80">Qual o nicho de atuação da sua empresa?</label>
+                <input
+                  id="niche"
+                  name="niche"
+                  type="text"
+                  required
+                  value={formData.niche}
+                  onChange={handleInputChange}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
+                  placeholder="Ex: Indústria, Varejo, Serviços..."
+                />
               </div>
 
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full h-[52px] bg-accent hover:bg-accent/90 disabled:bg-accent/50 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2 group"
+                className="w-full bg-accent hover:bg-accent/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-accent/20 flex items-center justify-center gap-3 group disabled:opacity-70"
               >
                 {status === 'loading' ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Processando...
-                  </>
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    Agendar uma demonstração
-                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    Agendar demonstração gratuita
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
               </button>
-              {status === 'error' && (
-                <p className="text-red-400 text-xs text-center mt-2">Ocorreu um erro ao enviar. Por favor, tente novamente.</p>
-              )}
-              <p className="text-[10px] text-center text-secondary/60">Ao enviar, você concorda com nossos Termos de Uso e Política de Privacidade.</p>
+
+              <p className="text-[10px] text-center text-secondary/50">
+                Ao enviar, você concorda com nossa política de privacidade e em receber contatos do ARK.
+              </p>
             </form>
           )}
         </FadeUpText>
@@ -868,29 +869,35 @@ const ContactForm = () => {
 // --- 12. FOOTER (DARK BLUE) ---
 const Footer = () => {
   return (
-    <footer className="bg-surface pt-20 pb-12 px-5 md:px-12 xl:px-24 border-t border-white/5">
-      <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <img src="/logo.png" alt="ARK" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
-        <div className="hidden font-bold text-3xl md:text-4xl tracking-tighter text-white mb-4">ARK</div>
-        <p className="text-[14px] md:text-base text-secondary max-w-sm mb-12 leading-relaxed-body md:leading-relaxed">
-          Descubra o impacto real na sua empresa.<br />Preencha os dados para simular quanto a Reforma Tributária pode aumentar ou reduzir sua carga.
-        </p>
-
-        <div className="border-t border-white/10 pt-8 w-full flex flex-col md:flex-row items-center justify-between text-[10px] md:text-xs text-secondary/60 gap-4">
-          <p>© {new Date().getFullYear()} Vocare. Todos os direitos reservados.</p>
-          <div className="flex gap-4">
-            <a href="https://policies.google.com/privacy" className="hover:text-white transition-colors">Política de Privacidade</a>
-            <a href="https://policies.google.com/terms" className="hover:text-white transition-colors">Termos de Serviço</a>
+    <footer className="py-12 md:py-16 px-5 md:px-12 xl:px-24 bg-surface border-t border-white/5">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <div className="flex items-center h-8">
+            <img src="logo.png" alt="ARK" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+            <div className="hidden font-bold text-2xl tracking-tighter text-white">ARK</div>
           </div>
+          <p className="text-secondary text-[11px] md:text-sm text-center md:text-left max-w-xs">
+            Tecnologia de precisão para a transição da Reforma Tributária. Validado pelo CTB.
+          </p>
+        </div>
+
+        <div className="flex gap-8 text-[11px] md:text-sm text-secondary">
+          <a href="#" className="hover:text-white transition-colors">Política de Privacidade</a>
+          <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
+          <a href="#demonstracao" className="text-accent font-bold hover:underline">Agendar Demonstração</a>
+        </div>
+
+        <div className="text-[10px] md:text-xs text-secondary/30">
+          © {new Date().getFullYear()} ARK Tributário. Todos os direitos reservados.
         </div>
       </div>
     </footer>
   );
 };
 
-function App() {
+const App = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <main className="selection:bg-accent/30">
       <Navbar />
       <Hero />
       <VideoSection />
@@ -904,8 +911,8 @@ function App() {
       <FinalCTA />
       <ContactForm />
       <Footer />
-    </div>
+    </main>
   );
-}
+};
 
 export default App;
