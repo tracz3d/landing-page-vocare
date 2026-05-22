@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Vocare | Presença Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #153645, #0f2a35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: #FAFAFA;
+      border-radius: 24px;
+      padding: 42px 32px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+      text-align: center;
+      animation: fadeUp 0.7s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      color: #153645;
+      font-weight: 600;
+    }
+
+    .slogan {
+      font-size: 22px;
+      margin: 14px 0 34px;
+      color: #2e2e2e;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .slogan strong {
+      font-weight: 700;
+      color: #153645;
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border-radius: 16px;
+      background: #ffffff;
+      color: #153645;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      border: 1px solid #e6e6e6;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+	
+	.link-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+	}
+
+	.link i {
+	  font-size: 18px;
+	  color: #153645;
+	  opacity: 0.85;
+	  transition: transform 0.25s ease;
+	}
+
+	.link .arrow {
+	  font-size: 18px;
+	  opacity: 0.6;
+	}
+
+	.link:hover i {
+	  transform: scale(1.1);
+	}
+
+    .link::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(21,54,69,0.08), rgba(21,54,69,0));
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .link:hover::before {
+      opacity: 1;
+    }
+
+    .link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(0,0,0,0.15);
+    }
+
+    .link span {
+      font-size: 18px;
+      opacity: 0.7;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e6e6e6;
+      margin: 26px 0 18px;
+    }
+
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .social a {
+      font-size: 13px;
+      text-decoration: none;
+      color: #7a7a7a;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .social a:hover {
+      color: #153645;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: #9a9a9a;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <img src="logo.png" class="logo" alt="Vocare Presença Digital">
+
+    <h1></h1>
+
+    <p class="slogan">
+      Mais do que estar presente,<br>
+      <strong>é preciso fazer sentido.</strong>
+    </p>
+
+	<a href="https://www.instagram.com/vocarepresencadigital" class="link" target="_blank">
+	  <div class="link-content">
+		<i class="fa-brands fa-instagram"></i>
+		<span class="text">Instagram</span>
+	  </div>
+	  <span class="arrow">→</span>
+	</a>
+
+	<a href="https://www.vocarepresencadigital.com.br" class="link" target="_blank">
+	  <div class="link-content">
+		<i class="fa-solid fa-globe"></i>
+		<span class="text">Site Oficial</span>
+	  </div>
+	  <span class="arrow">→</span>
+	</a>
+
+	<a href="" class="link" target="_blank">
+	  <div class="link-content">
+		<i class="fa-brands fa-whatsapp"></i>
+		<span class="text">WhatsApp</span>
+	  </div>
+	  <span class="arrow">→</span>
+	</a>
+
+	<a href="" class="link" target="_blank">
+	  <div class="link-content">
+		<i class="fa-solid fa-location-dot"></i>
+		<span class="text">Vocare no Google</span>
+	  </div>
+	  <span class="arrow">→</span>
+	</a>
+
+    <footer>
+      © Vocare Presença Digital
+    </footer>
+  </div>
+
+</body>
+</html>

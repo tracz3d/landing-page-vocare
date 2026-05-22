@@ -1,4 +1,4 @@
-# Manual de Identidade Visual – ARK by Vocare Tech
+# Manual de Identidade Visual — ARK by Vocare Tech
 
 Este documento consolida a identidade visual da ARK para uso na construção da Landing Page.
 
@@ -12,7 +12,7 @@ Este documento consolida a identidade visual da ARK para uso na construção da 
 | **Secondary (Grayish Blue)** | `#9DADC7` | Elementos de suporte, bordas e ícones. |
 | **Background** | `#FFFFFF` | Fundo principal das páginas. |
 
-## 📖 Tipografia
+## 🔤 Tipografia
 
 - **Fonte Principal:** [Montserrat](https://fonts.google.com/specimen/Montserrat) (Heading & Paragraph)
 - **Fonte de Fallback:** Arial, Helvetica, sans-serif
@@ -21,7 +21,7 @@ Este documento consolida a identidade visual da ARK para uso na construção da 
   - **H2:** 38.4px (Semi-negrito)
   - **Corpo:** 19.2px
 
-## 🖼️ Logos e Ativos
+## 🖼 Logos e Ativos
 
 Os seguintes ativos foram identificados e devem ser utilizados conforme o contexto:
 
@@ -33,7 +33,7 @@ Os seguintes ativos foram identificados e devem ser utilizados conforme o contex
 > [!NOTE]
 > Os arquivos de imagem enviados no chat devem ser movidos para a pasta `assets/brand/` para garantir que o código da Landing Page os localize corretamente.
 
-## 🧱 Componentes Pré-definidos
+## 🧩 Componentes Pré-definidos
 
 ### Botão Primário (Pill)
 - **Background:** `#1E64BA`
