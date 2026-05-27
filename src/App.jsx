@@ -601,7 +601,7 @@ const ContactForm = () => {
     fullName: '',
     phone: '',
     email: '',
-    niche: ''
+    companyName: ''
   });
   const [taxRegime, setTaxRegime] = useState('');
   const [employeeCount, setEmployeeCount] = useState('');
@@ -638,7 +638,7 @@ const ContactForm = () => {
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
-        cf_qual_o_nicho_de_atuacao_da_sua_empresa: formData.niche,
+        cf_nome_da_empresa: formData.companyName,
         cf_qual_o_regime_tributario_da_sua_empresa: taxRegime,
         cf_quantos_funcionarios_sua_empresa_possui: employeeCount,
         cf_url_da_pagina: window.location.href, // Enviando a URL como campo personalizado
@@ -758,7 +758,7 @@ const ContactForm = () => {
               </p>
               <button
                 onClick={() => {
-                  setFormData({ fullName: '', phone: '', email: '', niche: '' });
+                  setFormData({ fullName: '', phone: '', email: '', companyName: '' });
                   setTaxRegime('');
                   setEmployeeCount('');
                   setStatus('idle');
@@ -859,16 +859,16 @@ const ContactForm = () => {
 
               {/* Additional Info Group */}
               <div className="space-y-2">
-                <label htmlFor="niche" className="text-sm font-medium text-white/80">Nicho de atuação</label>
+                <label htmlFor="companyName" className="text-sm font-medium text-white/80">Nome da Empresa</label>
                 <input
-                  id="niche"
-                  name="niche"
+                  id="companyName"
+                  name="companyName"
                   type="text"
                   required
-                  value={formData.niche}
+                  value={formData.companyName}
                   onChange={handleInputChange}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
-                  placeholder="Ex: Tecnologia, Varejo..."
+                  placeholder="Razão social ou nome fantasia"
                 />
               </div>
 
