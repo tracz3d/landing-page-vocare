@@ -18,7 +18,7 @@ RUN npm install -g serve
 COPY --from=build /app/dist ./dist
 # Garante que a pasta public foi processada (o Vite faz isso automaticamente para o dist)
 
-EXPOSE 5173
+EXPOSE 80
 
 # Serve a pasta dist na porta 5173
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["serve", "-s", "dist", "-l", "80"]
