@@ -684,6 +684,10 @@ const ContactForm = () => {
         window.RdIntegration.post(sdkData);
       }
 
+      // Dispara conversão no Google apenas para leads qualificados
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'conversion_qualified' });
+
       setStatus('success');
 
     } catch (error) {
@@ -769,7 +773,7 @@ const ContactForm = () => {
               </button>
             </div>
           ) : (
-            <form id="lp-form-vocare" action="/conversion" onSubmit={handleSubmit} className="space-y-6">
+            <form id="lp-form-vocare" onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Info Group */}
               <div className="space-y-4">
                 <h4 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h4>
