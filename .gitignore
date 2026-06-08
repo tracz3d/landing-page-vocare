@@ -37,3 +37,6 @@ temp_verify_final/
 *.njsproj
 *.sln
 *.sw?
+
+# Local Netlify folder
+.netlify
