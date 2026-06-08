@@ -14,5 +14,13 @@ export default defineConfig({
   },
   build: {
     assetsDir: '', // Coloca tudo na raiz para evitar erro de pasta
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          gsap: ['gsap', '@gsap/react'],
+        }
+      }
+    }
   }
 })
