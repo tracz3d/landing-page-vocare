@@ -90,7 +90,7 @@ const Navbar = () => {
     <div className="fixed top-6 left-0 w-full z-50 flex justify-center px-5">
       <nav ref={navRef} className="rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-colors duration-300">
         <div className="flex items-center h-6 md:h-8">
-          <img src="logo.png" alt="ARK" width="113" height="32" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+          <img src="logo.webp" alt="ARK" width="113" height="32" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
           <div className="hidden font-bold text-xl md:text-2xl tracking-tighter text-white">ARK</div>
         </div>
         <MagneticButton className="bg-surface text-white py-2 px-6 text-[13px] md:text-sm hover:bg-surface/80 border border-white/10 hidden md:flex">
@@ -164,7 +164,7 @@ const Hero = () => {
         <div className="lg:col-span-5 relative hidden md:block">
           <div className="hero-anim relative aspect-[3/4] w-full max-w-md ml-auto rounded-3xl overflow-hidden glass-panel border border-white/10">
             <img
-              src="adriano_subira.png"
+              src="adriano_subira.webp"
               alt="Adriano Subirá"
               width="600"
               height="800"
@@ -923,7 +923,7 @@ const Footer = () => {
   return (
     <footer className="bg-surface pt-20 pb-12 px-5 md:px-12 xl:px-24 border-t border-white/5">
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <img src="logo.png" alt="ARK" width="113" height="32" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+        <img src="logo.webp" alt="ARK" width="113" height="32" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
         <div className="hidden font-bold text-3xl md:text-4xl tracking-tighter text-white mb-4">ARK</div>
         <p className="text-[14px] md:text-base text-secondary max-w-sm mb-12 leading-relaxed-body md:leading-relaxed">
           Descubra o impacto real na sua empresa.<br />Preencha os dados para simular quanto a Reforma Tributária pode aumentar ou reduzir sua carga.
