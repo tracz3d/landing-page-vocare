@@ -655,6 +655,7 @@ const ContactForm = () => {
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
+        company_name: formData.companyName,
         cf_nome_da_empresa: formData.companyName,
         cf_qual_o_regime_tributario_da_sua_empresa: taxRegime,
         cf_quantos_funcionarios_sua_empresa_possui: employeeCount,
