@@ -16,9 +16,21 @@ if (!template.includes('<div id="root"></div>')) {
   throw new Error('prerender: marcador <div id="root"></div> nao encontrado no index.html');
 }
 
-const html = template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+let html = template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+
+// Inline do CSS local (Vite) para eliminar request render-blocking — melhora FCP/LCP.
+// As fontes do Google continuam carregando de forma assíncrona (href https, não casa com ./).
+html = html.replace(/<link\b[^>]*?href="\.\/([^"]+\.css)"[^>]*?>/g, (match, cssFile) => {
+  try {
+    const css = fs.readFileSync(toAbsolute('dist/' + cssFile), 'utf-8');
+    return `<style>${css}</style>`;
+  } catch {
+    return match; // se não achar o arquivo, mantém o link original
+  }
+});
+
 fs.writeFileSync(templatePath, html);
-console.log('SSG: dist/index.html pre-renderizado (' + appHtml.length + ' chars de HTML).');
+console.log('SSG: dist/index.html pre-renderizado (' + appHtml.length + ' chars) + CSS inline.');
 
 // Limpa o bundle de SSR (nao precisa ir para producao)
 fs.rmSync(toAbsolute('dist-ssr'), { recursive: true, force: true });
