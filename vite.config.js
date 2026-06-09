@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [react()],
   base: './',
   server: {
@@ -14,12 +14,15 @@ export default defineConfig({
   },
   build: {
     assetsDir: '', // Coloca tudo na raiz para evitar erro de pasta
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-        }
-      }
-    }
-  }
-})
+    // manualChunks só no build de cliente; no SSR o React é externo.
+    rollupOptions: isSsrBuild
+      ? {}
+      : {
+          output: {
+            manualChunks: {
+              vendor: ['react', 'react-dom'],
+            },
+          },
+        },
+  },
+}))

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { ArrowRight, Check, Minus, ChevronDown, ChevronRight, CheckCircle2, Terminal, Clock, Send, Loader2 } from 'lucide-react';
+import { Check, Minus, ChevronDown, ChevronRight, CheckCircle2, Terminal, Clock, Loader2 } from 'lucide-react';
 
 // --- Hook reutilizável: revela ao entrar na viewport (substitui GSAP ScrollTrigger) ---
 const useReveal = (options = {}) => {
