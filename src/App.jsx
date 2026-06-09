@@ -120,7 +120,7 @@ const Hero = () => {
             Exclusivo para Lucro Real e Presumido
           </div>
 
-          <h1 className="hero-anim text-[48px] md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-tight-compressed md:leading-[1.1]">
+          <h1 className="text-[48px] md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-tight-compressed md:leading-[1.1]">
             Quanto a Reforma vai tirar da sua margem?
           </h1>
 
