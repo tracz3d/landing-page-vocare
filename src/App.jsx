@@ -90,7 +90,7 @@ const Navbar = () => {
     <div className="fixed top-6 left-0 w-full z-50 flex justify-center px-5">
       <nav ref={navRef} className="rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-colors duration-300">
         <div className="flex items-center h-6 md:h-8">
-          <img src="logo.png" alt="ARK" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+          <img src="logo.webp" alt="ARK" width="113" height="32" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
           <div className="hidden font-bold text-xl md:text-2xl tracking-tighter text-white">ARK</div>
         </div>
         <MagneticButton className="bg-surface text-white py-2 px-6 text-[13px] md:text-sm hover:bg-surface/80 border border-white/10 hidden md:flex">
@@ -166,6 +166,9 @@ const Hero = () => {
             <img
               src="adriano_subira.png"
               alt="Adriano Subirá"
+              width="600"
+              height="800"
+              loading="lazy"
               className="w-full h-full object-cover mix-blend-luminosity opacity-90"
               onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop' }}
             />
@@ -252,7 +255,7 @@ const WhatChanged = () => {
         <FadeUpGroup className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {items.map((item, idx) => (
             <div key={idx} className="glass-panel p-6 md:p-8 rounded-[2rem] hover:bg-white/5 transition-colors border border-white/5">
-              <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 leading-tight">{item.title}</h4>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 leading-tight">{item.title}</h3>
               <p className="text-[14px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -298,7 +301,7 @@ const HowArkResponds = () => {
 
         <FadeUpText className="glass-panel rounded-[2rem] p-6 md:p-12 border border-white/5 flex flex-col md:flex-row gap-10 md:gap-12 items-center text-center md:text-left">
           <div className="flex-1">
-            <h4 className="text-lg md:text-xl font-bold text-white mb-4">Como funciona</h4>
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4">Como funciona</h3>
             <p className="text-[15px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed mb-8 md:mb-6">
               Notas e documentos fiscais da sua empresa são processados por um <strong className="text-white">motor de cálculo com a LC 214/2025 integrada.</strong> O resultado: uma visão clara de como cada fase da transição afeta sua margem, seu caixa e sua competitividade <strong className="text-white">mês a mês, até 2033.</strong>
             </p>
@@ -381,7 +384,7 @@ const ValidatedBy = () => {
           </h2>
 
           <div className="mb-8">
-            <h4 className="text-base md:text-lg font-bold text-white mb-2 leading-snug">Recomendado pelo Comitê Tributário Brasileiro</h4>
+            <h3 className="text-base md:text-lg font-bold text-white mb-2 leading-snug">Recomendado pelo Comitê Tributário Brasileiro</h3>
             <p className="text-[15px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed">
               O ARK foi avaliado pelo CTB, composto por <strong className="text-white">tributaristas, auditores e ex-auditores da Receita Federal</strong>, e é recomendado como tecnologia de referência para a transição da Reforma Tributária.
             </p>
@@ -396,7 +399,7 @@ const ValidatedBy = () => {
           </ul>
 
           <div className="pt-8 border-t border-white/10">
-            <h4 className="text-base md:text-lg font-bold text-white mb-2">Parceria estratégica G4</h4>
+            <h3 className="text-base md:text-lg font-bold text-white mb-2">Parceria estratégica G4</h3>
             <p className="text-secondary text-xs md:text-sm">Utilizado e recomendado pelo G4 Educação para gestores e empresários. Tecnologia validada por quem vive o tributário por dentro.</p>
           </div>
 
@@ -638,6 +641,7 @@ const ContactForm = () => {
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
+        company_name: formData.companyName,
         cf_nome_da_empresa: formData.companyName,
         cf_qual_o_regime_tributario_da_sua_empresa: taxRegime,
         cf_quantos_funcionarios_sua_empresa_possui: employeeCount,
@@ -683,6 +687,10 @@ const ContactForm = () => {
         ];
         window.RdIntegration.post(sdkData);
       }
+
+      // Dispara conversão no Google apenas para leads qualificados
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'conversion_qualified' });
 
       setStatus('success');
 
@@ -769,10 +777,10 @@ const ContactForm = () => {
               </button>
             </div>
           ) : (
-            <form id="lp-form-vocare" action="/conversion" onSubmit={handleSubmit} className="space-y-6">
+            <form id="lp-form-vocare" onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Info Group */}
               <div className="space-y-4">
-                <h4 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h4>
+                <h3 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="fullName" className="text-sm font-medium text-white/80">Nome Completo</label>
@@ -906,7 +914,7 @@ const Footer = () => {
   return (
     <footer className="bg-surface pt-20 pb-12 px-5 md:px-12 xl:px-24 border-t border-white/5">
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <img src="logo.png" alt="ARK" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+        <img src="logo.webp" alt="ARK" width="113" height="32" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
         <div className="hidden font-bold text-3xl md:text-4xl tracking-tighter text-white mb-4">ARK</div>
         <p className="text-[14px] md:text-base text-secondary max-w-sm mb-12 leading-relaxed-body md:leading-relaxed">
           Descubra o impacto real na sua empresa.<br />Preencha os dados para simular quanto a Reforma Tributária pode aumentar ou reduzir sua carga.
