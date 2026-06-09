@@ -84,12 +84,23 @@ const Navbar = () => {
   const navRef = useRef(null);
 
   useEffect(() => {
+    let scrolled = false;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const next = window.scrollY > 50;
+      if (next !== scrolled) {
+        scrolled = next;
+        navRef.current?.classList.toggle('nav-scrolled', next);
+      }
+    };
     const onScroll = () => {
-      if (!navRef.current) return;
-      navRef.current.classList.toggle('nav-scrolled', window.scrollY > 50);
+      // Lê o scroll dentro do rAF (alinhado ao render) e só escreve quando muda,
+      // evitando reflow forçado a cada evento de scroll.
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    update();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
