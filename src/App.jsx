@@ -209,8 +209,18 @@ const VideoSection = () => {
   }, []);
 
   useEffect(() => {
-    if (showEmbed && window.instgrm) {
-      window.instgrm.Embeds.process();
+    if (!showEmbed) return;
+    const process = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
+    if (window.instgrm) {
+      process();
+    } else if (!document.getElementById('ig-embed-script')) {
+      // Carrega o script do Instagram só quando a seção entra na viewport
+      const s = document.createElement('script');
+      s.id = 'ig-embed-script';
+      s.async = true;
+      s.src = 'https://www.instagram.com/embed.js';
+      s.onload = process;
+      document.body.appendChild(s);
     }
   }, [showEmbed]);
 
