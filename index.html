@@ -16,8 +16,8 @@
       var evts = ['scroll','mousemove','touchstart','keydown','click'];
       function trigger(){ loadGTM(); evts.forEach(function(e){ w.removeEventListener(e, trigger); }); }
       evts.forEach(function(e){ w.addEventListener(e, trigger, { passive: true }); });
-      // Fallback: carrega após 3,5s mesmo sem interação
-      w.setTimeout(loadGTM, 3500);
+      // Carrega somente na primeira interação do usuário (scroll/clique/toque/tecla).
+      // Visitantes reais interagem antes de converter, então a conversão é preservada.
     })(window,document,'script','dataLayer','GTM-5M9DBVFP');
     </script>
     <!-- End Google Tag Manager -->
@@ -34,6 +34,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
+    <!-- Sem JS: garante que o conteúdo animado fique visível -->
+    <noscript><style>.reveal,.reveal-group>*,.hero-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>
   </head>
   <body class="bg-background text-primary antialiased overflow-x-hidden selection:bg-accent selection:text-white">
     <!-- Google Tag Manager (noscript) -->

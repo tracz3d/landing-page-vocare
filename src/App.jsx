@@ -1,10 +1,31 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Check, Minus, ChevronDown, ChevronRight, CheckCircle2, Terminal, Clock, Send, Loader2 } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
+// --- Hook reutilizável: revela ao entrar na viewport (substitui GSAP ScrollTrigger) ---
+const useReveal = (options = {}) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Respeita usuários que preferem menos movimento
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.classList.add('is-visible');
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-visible');
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px', ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+};
 
 // --- Componentes Reutilizáveis ---
 
@@ -17,57 +38,43 @@ const MagneticButton = ({ children, className = '', href = '#demonstracao' }) =>
 };
 
 const FadeUpText = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  useGSAP(() => {
-    gsap.from(ref.current, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 85%',
-      }
-    });
-  }, { scope: ref });
-  return <div ref={ref} className={className}>{children}</div>;
+  const ref = useReveal();
+  return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
 };
 
 const FadeUpGroup = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  useGSAP(() => {
-    gsap.from(ref.current.children, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 85%',
-      }
-    });
-  }, { scope: ref });
-  return <div ref={ref} className={className}>{children}</div>;
+  const ref = useReveal();
+  return <div ref={ref} className={`reveal-group ${className}`}>{children}</div>;
 };
 
 const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
 
-  useGSAP(() => {
-    const obj = { value: 0 };
-    gsap.to(obj, {
-      value: end,
-      duration: 2.5,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 90%'
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { setVal(end); return; }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        obs.disconnect();
+        const duration = 2200;
+        const start = performance.now();
+        const step = (now) => {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3); // equivalente a power3.out
+          setVal(Math.round(end * eased));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
       },
-      onUpdate: () => setVal(Math.round(obj.value))
-    });
-  }, { scope: ref });
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [end]);
 
   return <span ref={ref} className={className}>{prefix}{val}{suffix}</span>;
 };
@@ -76,19 +83,19 @@ const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
 const Navbar = () => {
   const navRef = useRef(null);
 
-  useGSAP(() => {
-    ScrollTrigger.create({
-      start: 'top -50',
-      end: 99999,
-      toggleClass: { className: 'glass-panel', targets: navRef.current },
-      onEnter: () => gsap.to(navRef.current, { backgroundColor: 'rgba(20, 31, 40, 0.6)', border: '1px solid rgba(255,255,255,0.05)' }),
-      onLeaveBack: () => gsap.to(navRef.current, { backgroundColor: 'transparent', border: '1px solid transparent' })
-    });
+  useEffect(() => {
+    const onScroll = () => {
+      if (!navRef.current) return;
+      navRef.current.classList.toggle('nav-scrolled', window.scrollY > 50);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <div className="fixed top-6 left-0 w-full z-50 flex justify-center px-5">
-      <nav ref={navRef} className="rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-colors duration-300">
+      <nav ref={navRef} className="nav-base rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-all duration-300">
         <div className="flex items-center h-6 md:h-8">
           <img src="logo.webp" alt="ARK" width="113" height="32" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
           <div className="hidden font-bold text-xl md:text-2xl tracking-tighter text-white">ARK</div>
@@ -103,21 +110,12 @@ const Navbar = () => {
 
 // --- 1. HERO SECTION (DARK BLUE) ---
 const Hero = () => {
-  const heroRef = useRef(null);
-
-  useGSAP(() => {
-    gsap.fromTo('.hero-anim',
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
-    );
-  }, { scope: heroRef });
-
   return (
-    <section ref={heroRef} className="relative pt-32 md:pt-40 pb-10 px-5 md:px-12 xl:px-24 min-h-[85dvh] flex flex-col justify-center overflow-hidden bg-surface">
+    <section className="relative pt-32 md:pt-40 pb-10 px-5 md:px-12 xl:px-24 min-h-[85dvh] flex flex-col justify-center overflow-hidden bg-surface">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/20 via-surface to-surface"></div>
 
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
-        <div className="lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left">
+        <div className="hero-stagger lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left">
           <div className="hero-anim px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent-light text-[10px] md:text-xs font-semibold tracking-wide uppercase mb-6 md:mb-8">
             Exclusivo para Lucro Real e Presumido
           </div>

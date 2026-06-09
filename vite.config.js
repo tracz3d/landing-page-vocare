@@ -18,7 +18,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          gsap: ['gsap', '@gsap/react'],
         }
       }
     }
