@@ -670,7 +670,7 @@ const ContactForm = () => {
       event_type: "CONVERSION",
       event_family: "CDP",
       payload: {
-        conversion_identifier: "lp-ark-google",
+        conversion_identifier: "GOOGLE ADS - LP",
         traffic_source: "Google Ads",
         name: formData.fullName,
         email: formData.email,
@@ -714,7 +714,7 @@ const ContactForm = () => {
       // Tentativa 2: SDK do RD (Para garantir que apareça em "formulários capturados")
       if (window.RdIntegration) {
         const sdkData = [
-          { name: 'conversion_identifier', value: 'lp-ark-google' },
+          { name: 'conversion_identifier', value: 'GOOGLE ADS - LP' },
           { name: 'email', value: formData.email },
           { name: 'name', value: formData.fullName },
           { name: 'page_url', value: window.location.href }
