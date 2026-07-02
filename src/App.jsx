@@ -671,6 +671,7 @@ const ContactForm = () => {
       event_family: "CDP",
       payload: {
         conversion_identifier: "lp-ark-google",
+        traffic_source: "Google Ads",
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
