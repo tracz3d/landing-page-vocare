@@ -8,7 +8,6 @@
     /* Static noise texture for performance - much lighter than SVG feTurbulence */
     background-image: url("https://res.cloudinary.com/dyd911kmh/image/upload/v1640050215/noise_vpx68v.png");
     background-repeat: repeat;
-    background-attachment: fixed;
     opacity: 0.98; /* Subtle blend */
   }
 }
@@ -29,13 +28,76 @@
   }
 }
 
-/* Custom GSAP Styles */
-.split-line {
-  overflow: hidden;
+/* --- Animações de revelação (substituem o GSAP) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
-.split-word {
-  display: inline-block;
-  will-change: transform, opacity;
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Grupo com stagger nos filhos diretos */
+.reveal-group > * {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal-group.is-visible > * {
+  opacity: 1;
+  transform: none;
+}
+.reveal-group.is-visible > *:nth-child(1) { transition-delay: 0s; }
+.reveal-group.is-visible > *:nth-child(2) { transition-delay: 0.12s; }
+.reveal-group.is-visible > *:nth-child(3) { transition-delay: 0.24s; }
+.reveal-group.is-visible > *:nth-child(4) { transition-delay: 0.36s; }
+.reveal-group.is-visible > *:nth-child(5) { transition-delay: 0.48s; }
+.reveal-group.is-visible > *:nth-child(6) { transition-delay: 0.60s; }
+.reveal-group.is-visible > *:nth-child(7) { transition-delay: 0.72s; }
+.reveal-group.is-visible > *:nth-child(8) { transition-delay: 0.84s; }
+
+/* Hero: animação de entrada no load com stagger */
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-anim {
+  opacity: 0;
+  animation: heroIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-stagger > .hero-anim:nth-child(1) { animation-delay: 0.15s; }
+.hero-stagger > .hero-anim:nth-child(2) { animation-delay: 0.25s; }
+.hero-stagger > .hero-anim:nth-child(3) { animation-delay: 0.35s; }
+.hero-stagger > .hero-anim:nth-child(4) { animation-delay: 0.45s; }
+.hero-stagger > .hero-anim:nth-child(5) { animation-delay: 0.55s; }
+.hero-stagger > .hero-anim:nth-child(6) { animation-delay: 0.65s; }
+
+/* Navbar: efeito glass ao rolar (substitui o toggleClass do GSAP) */
+.nav-base {
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+.nav-base.nav-scrolled {
+  background-color: rgba(20, 31, 40, 0.6);
+  border-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Acessibilidade: respeita preferência por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-group > *,
+  .hero-anim {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 @keyframes marquee {

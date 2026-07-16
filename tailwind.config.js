@@ -11,6 +11,7 @@ export default {
         surface: '#141F28',
         primary: '#DDE3ED',
         accent: '#1E64BA',
+        'accent-light': '#4D8FD6',
       },
       fontFamily: {
         sans: ['Montserrat', 'sans-serif'],

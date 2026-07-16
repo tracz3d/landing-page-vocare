@@ -1,10 +1,31 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, Check, Minus, ChevronDown, ChevronRight, CheckCircle2, Terminal, Clock, Send, Loader2 } from 'lucide-react';
+import { Check, Minus, ChevronDown, ChevronRight, CheckCircle2, Terminal, Clock, Loader2 } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
+// --- Hook reutilizável: revela ao entrar na viewport (substitui GSAP ScrollTrigger) ---
+const useReveal = (options = {}) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Respeita usuários que preferem menos movimento
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.classList.add('is-visible');
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-visible');
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px', ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+};
 
 // --- Componentes Reutilizáveis ---
 
@@ -17,57 +38,43 @@ const MagneticButton = ({ children, className = '', href = '#demonstracao' }) =>
 };
 
 const FadeUpText = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  useGSAP(() => {
-    gsap.from(ref.current, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 85%',
-      }
-    });
-  }, { scope: ref });
-  return <div ref={ref} className={className}>{children}</div>;
+  const ref = useReveal();
+  return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
 };
 
 const FadeUpGroup = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  useGSAP(() => {
-    gsap.from(ref.current.children, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.15,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 85%',
-      }
-    });
-  }, { scope: ref });
-  return <div ref={ref} className={className}>{children}</div>;
+  const ref = useReveal();
+  return <div ref={ref} className={`reveal-group ${className}`}>{children}</div>;
 };
 
 const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
 
-  useGSAP(() => {
-    const obj = { value: 0 };
-    gsap.to(obj, {
-      value: end,
-      duration: 2.5,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: ref.current,
-        start: 'top 90%'
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { setVal(end); return; }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        obs.disconnect();
+        const duration = 2200;
+        const start = performance.now();
+        const step = (now) => {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3); // equivalente a power3.out
+          setVal(Math.round(end * eased));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
       },
-      onUpdate: () => setVal(Math.round(obj.value))
-    });
-  }, { scope: ref });
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [end]);
 
   return <span ref={ref} className={className}>{prefix}{val}{suffix}</span>;
 };
@@ -76,21 +83,32 @@ const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
 const Navbar = () => {
   const navRef = useRef(null);
 
-  useGSAP(() => {
-    ScrollTrigger.create({
-      start: 'top -50',
-      end: 99999,
-      toggleClass: { className: 'glass-panel', targets: navRef.current },
-      onEnter: () => gsap.to(navRef.current, { backgroundColor: 'rgba(20, 31, 40, 0.6)', border: '1px solid rgba(255,255,255,0.05)' }),
-      onLeaveBack: () => gsap.to(navRef.current, { backgroundColor: 'transparent', border: '1px solid transparent' })
-    });
+  useEffect(() => {
+    let scrolled = false;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const next = window.scrollY > 50;
+      if (next !== scrolled) {
+        scrolled = next;
+        navRef.current?.classList.toggle('nav-scrolled', next);
+      }
+    };
+    const onScroll = () => {
+      // Lê o scroll dentro do rAF (alinhado ao render) e só escreve quando muda,
+      // evitando reflow forçado a cada evento de scroll.
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <div className="fixed top-6 left-0 w-full z-50 flex justify-center px-5">
-      <nav ref={navRef} className="rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-colors duration-300">
+      <nav ref={navRef} className="nav-base rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between w-full max-w-6xl transition-all duration-300">
         <div className="flex items-center h-6 md:h-8">
-          <img src="logo.png" alt="ARK" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+          <img src="logo.webp" alt="ARK" width="113" height="32" className="h-full object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
           <div className="hidden font-bold text-xl md:text-2xl tracking-tighter text-white">ARK</div>
         </div>
         <MagneticButton className="bg-surface text-white py-2 px-6 text-[13px] md:text-sm hover:bg-surface/80 border border-white/10 hidden md:flex">
@@ -103,26 +121,17 @@ const Navbar = () => {
 
 // --- 1. HERO SECTION (DARK BLUE) ---
 const Hero = () => {
-  const heroRef = useRef(null);
-
-  useGSAP(() => {
-    gsap.fromTo('.hero-anim',
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
-    );
-  }, { scope: heroRef });
-
   return (
-    <section ref={heroRef} className="relative pt-32 md:pt-40 pb-10 px-5 md:px-12 xl:px-24 min-h-[85dvh] flex flex-col justify-center overflow-hidden bg-surface">
+    <section className="relative pt-32 md:pt-40 pb-10 px-5 md:px-12 xl:px-24 min-h-[85dvh] flex flex-col justify-center overflow-hidden bg-surface">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/20 via-surface to-surface"></div>
 
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
-        <div className="lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left">
-          <div className="hero-anim px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-[10px] md:text-xs font-semibold tracking-wide uppercase mb-6 md:mb-8">
+        <div className="hero-stagger lg:col-span-7 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="hero-anim px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent-light text-[10px] md:text-xs font-semibold tracking-wide uppercase mb-6 md:mb-8">
             Exclusivo para Lucro Real e Presumido
           </div>
 
-          <h1 className="hero-anim text-[48px] md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-tight-compressed md:leading-[1.1]">
+          <h1 className="text-[48px] md:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-tight-compressed md:leading-[1.1]">
             Quanto a Reforma vai tirar da sua margem?
           </h1>
 
@@ -164,8 +173,11 @@ const Hero = () => {
         <div className="lg:col-span-5 relative hidden md:block">
           <div className="hero-anim relative aspect-[3/4] w-full max-w-md ml-auto rounded-3xl overflow-hidden glass-panel border border-white/10">
             <img
-              src="adriano_subira.png"
+              src="adriano_subira.webp"
               alt="Adriano Subirá"
+              width="600"
+              height="800"
+              loading="lazy"
               className="w-full h-full object-cover mix-blend-luminosity opacity-90"
               onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop' }}
             />
@@ -193,11 +205,33 @@ const Hero = () => {
 
 // --- 2. VIDEO SECTION (WHITE BACKGROUND) ---
 const VideoSection = () => {
+  const [showEmbed, setShowEmbed] = useState(false);
+  const sectionRef = useRef(null);
+
   useEffect(() => {
-    if (window.instgrm) {
-      window.instgrm.Embeds.process();
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setShowEmbed(true); },
+      { rootMargin: '200px' }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!showEmbed) return;
+    const process = () => { if (window.instgrm) window.instgrm.Embeds.process(); };
+    if (window.instgrm) {
+      process();
+    } else if (!document.getElementById('ig-embed-script')) {
+      // Carrega o script do Instagram só quando a seção entra na viewport
+      const s = document.createElement('script');
+      s.id = 'ig-embed-script';
+      s.async = true;
+      s.src = 'https://www.instagram.com/embed.js';
+      s.onload = process;
+      document.body.appendChild(s);
+    }
+  }, [showEmbed]);
 
   const igEmbedHtml = `<blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DUCDL1jjzrs/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/reel/DUCDL1jjzrs/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">Ver essa foto no Instagram</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/reel/DUCDL1jjzrs/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">Um post compartilhado por ARK (@ark.tributario)</a></p></div></blockquote>`;
 
@@ -208,9 +242,11 @@ const VideoSection = () => {
           O que a Misa Antonini <span className="text-slate-500 font-light italic">(CEO do G4 Educação)</span> tem a dizer sobre o ARK
         </h2>
       </FadeUpText>
-      <FadeUpText className="w-full max-w-[540px] flex justify-center">
-        <div dangerouslySetInnerHTML={{ __html: igEmbedHtml }} className="w-full" />
-      </FadeUpText>
+      <div ref={sectionRef} className="w-full max-w-[540px] flex justify-center">
+        <FadeUpText className="w-full flex justify-center">
+          {showEmbed && <div dangerouslySetInnerHTML={{ __html: igEmbedHtml }} className="w-full" />}
+        </FadeUpText>
+      </div>
     </section>
   );
 };
@@ -240,7 +276,7 @@ const WhatChanged = () => {
     <section className="py-20 md:py-24 px-5 md:px-12 xl:px-24 bg-surface">
       <div className="max-w-6xl mx-auto">
         <FadeUpText className="mb-12 md:mb-16 text-center md:text-left">
-          <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-2">O que realmente mudou</h3>
+          <h3 className="text-sm font-semibold text-accent-light uppercase tracking-wider mb-2">O que realmente mudou</h3>
           <h2 className="text-[32px] md:text-5xl font-bold text-white mb-6 leading-tight-compressed md:leading-tight">
             A Reforma não é só uma <span className="italic font-light text-primary">troca de nome de imposto.</span>
           </h2>
@@ -252,7 +288,7 @@ const WhatChanged = () => {
         <FadeUpGroup className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {items.map((item, idx) => (
             <div key={idx} className="glass-panel p-6 md:p-8 rounded-[2rem] hover:bg-white/5 transition-colors border border-white/5">
-              <h4 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 leading-tight">{item.title}</h4>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 leading-tight">{item.title}</h3>
               <p className="text-[14px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -289,7 +325,7 @@ const HowArkResponds = () => {
     <section className="py-20 md:py-24 px-5 md:px-12 xl:px-24 bg-surface">
       <div className="max-w-6xl mx-auto">
         <FadeUpText className="mb-12 md:mb-16 text-center md:text-left">
-          <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-2">Como o ARK responde</h3>
+          <h3 className="text-sm font-semibold text-accent-light uppercase tracking-wider mb-2">Como o ARK responde</h3>
           <h2 className="text-[32px] md:text-5xl font-bold text-white leading-tight-compressed md:leading-tight">
             Não com estimativas de mercado.<br />
             <span className="italic font-light text-primary">Com os dados reais da sua operação.</span>
@@ -298,7 +334,7 @@ const HowArkResponds = () => {
 
         <FadeUpText className="glass-panel rounded-[2rem] p-6 md:p-12 border border-white/5 flex flex-col md:flex-row gap-10 md:gap-12 items-center text-center md:text-left">
           <div className="flex-1">
-            <h4 className="text-lg md:text-xl font-bold text-white mb-4">Como funciona</h4>
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4">Como funciona</h3>
             <p className="text-[15px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed mb-8 md:mb-6">
               Notas e documentos fiscais da sua empresa são processados por um <strong className="text-white">motor de cálculo com a LC 214/2025 integrada.</strong> O resultado: uma visão clara de como cada fase da transição afeta sua margem, seu caixa e sua competitividade <strong className="text-white">mês a mês, até 2033.</strong>
             </p>
@@ -309,7 +345,7 @@ const HowArkResponds = () => {
 
           <div className="flex-1 w-full bg-surface rounded-2xl p-6 md:p-8 border border-white/5 flex flex-col gap-4 relative overflow-hidden">
             <div className="flex items-center gap-4 bg-surface p-4 rounded-xl border border-white/5 z-10">
-              <div className="w-10 h-10 rounded bg-accent/20 flex items-center justify-center text-accent"><Terminal className="w-5 h-5" /></div>
+              <div className="w-10 h-10 rounded bg-accent/20 flex items-center justify-center text-accent-light"><Terminal className="w-5 h-5" /></div>
               <div className="font-mono text-xs md:text-sm text-primary">SPEDs e XMLs</div>
             </div>
             <div className="w-px h-6 md:h-8 bg-accent/30 mx-auto z-10"></div>
@@ -375,13 +411,13 @@ const ValidatedBy = () => {
     <section className="py-24 md:py-32 px-5 md:px-12 xl:px-24 bg-surface">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
         <FadeUpText className="text-center md:text-left">
-          <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-2">Validado por quem entende</h3>
+          <h3 className="text-sm font-semibold text-accent-light uppercase tracking-wider mb-2">Validado por quem entende</h3>
           <h2 className="text-[32px] md:text-5xl font-bold text-white mb-6 leading-tight-compressed md:leading-tight">
             Não é uma ferramenta qualquer. É a <span className="italic font-light text-primary">referência técnica da transição tributária.</span>
           </h2>
 
           <div className="mb-8">
-            <h4 className="text-base md:text-lg font-bold text-white mb-2 leading-snug">Recomendado pelo Comitê Tributário Brasileiro</h4>
+            <h3 className="text-base md:text-lg font-bold text-white mb-2 leading-snug">Recomendado pelo Comitê Tributário Brasileiro</h3>
             <p className="text-[15px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed">
               O ARK foi avaliado pelo CTB, composto por <strong className="text-white">tributaristas, auditores e ex-auditores da Receita Federal</strong>, e é recomendado como tecnologia de referência para a transição da Reforma Tributária.
             </p>
@@ -390,13 +426,13 @@ const ValidatedBy = () => {
           <ul className="space-y-3 mb-10 inline-block text-left">
             {["Tributaristas", "Auditores", "Ex-auditores da Receita Federal", "LC 214/2025 nativa"].map((item, i) => (
               <li key={i} className="flex items-center gap-3 text-sm md:text-base text-primary">
-                <Check className="text-accent w-5 h-5 shrink-0" /> {item}
+                <Check className="text-accent-light w-5 h-5 shrink-0" /> {item}
               </li>
             ))}
           </ul>
 
           <div className="pt-8 border-t border-white/10">
-            <h4 className="text-base md:text-lg font-bold text-white mb-2">Parceria estratégica G4</h4>
+            <h3 className="text-base md:text-lg font-bold text-white mb-2">Parceria estratégica G4</h3>
             <p className="text-secondary text-xs md:text-sm">Utilizado e recomendado pelo G4 Educação para gestores e empresários. Tecnologia validada por quem vive o tributário por dentro.</p>
           </div>
 
@@ -406,12 +442,12 @@ const ValidatedBy = () => {
         </FadeUpText>
 
         <FadeUpText className="bg-surface p-8 md:p-12 rounded-[2rem] border border-white/5 relative text-center md:text-left">
-          <div className="text-4xl md:text-6xl text-accent opacity-20 absolute top-4 md:top-6 left-4 md:left-6 font-serif">"</div>
+          <div className="text-4xl md:text-6xl text-accent-light opacity-20 absolute top-4 md:top-6 left-4 md:left-6 font-serif">"</div>
           <p className="text-[18px] md:text-2xl text-primary font-medium italic leading-relaxed-body md:leading-relaxed mb-8 relative z-10 pt-4">
             O ARK é a ferramenta mais completa que existe para navegar a Reforma Tributária. Como presidente do Comitê Tributário Brasileiro, não conheço nada equivalente no mercado.
           </p>
           <div className="flex items-center justify-center md:justify-start gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center text-accent font-bold border border-accent/30 shrink-0">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/20 rounded-full flex items-center justify-center text-accent-light font-bold border border-accent/30 shrink-0">
               AS
             </div>
             <div className="text-left">
@@ -463,7 +499,7 @@ const Comparison = () => {
                 <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                   <td className="py-4 md:py-5 px-2 md:px-6 text-[12px] md:text-base text-slate-800 leading-tight">{row.text}</td>
                   <td className="py-4 md:py-5 px-2 md:px-6 text-center text-slate-300"><Minus className="w-4 md:w-5 h-4 md:h-5 mx-auto" /></td>
-                  <td className="py-4 md:py-5 px-2 md:px-6 text-center bg-slate-900 border-x border-slate-800"><Check className="w-4 md:w-5 h-4 md:h-5 text-accent mx-auto" /></td>
+                  <td className="py-4 md:py-5 px-2 md:px-6 text-center bg-slate-900 border-x border-slate-800"><Check className="w-4 md:w-5 h-4 md:h-5 text-accent-light mx-auto" /></td>
                 </tr>
               ))}
             </tbody>
@@ -517,7 +553,7 @@ const FAQ = () => {
     <section className="py-20 md:py-24 px-5 md:px-12 xl:px-24 bg-surface">
       <div className="max-w-3xl mx-auto">
         <FadeUpText className="mb-10 md:mb-12 text-center">
-          <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-2">Tire suas dúvidas</h3>
+          <h3 className="text-sm font-semibold text-accent-light uppercase tracking-wider mb-2">Tire suas dúvidas</h3>
           <h2 className="text-[32px] md:text-5xl font-bold text-white mb-4 leading-tight-compressed md:leading-tight">Perguntas <span className="italic font-light text-primary">frequentes</span></h2>
           <p className="text-[15px] md:text-base text-secondary leading-relaxed-body md:leading-relaxed">Respostas diretas para as dúvidas mais comuns de quem ainda está avaliando o ARK.</p>
         </FadeUpText>
@@ -535,7 +571,7 @@ const FAQ = () => {
                   className="w-full px-5 md:px-6 py-4 md:py-5 flex items-center justify-between text-left focus:outline-none"
                 >
                   <span className="font-bold text-[15px] md:text-base text-white pr-4 leading-tight">{faq.q}</span>
-                  <ChevronDown className={`w-4 md:w-5 h-4 md:h-5 text-accent transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 md:w-5 h-4 md:h-5 text-accent-light transition-transform duration-300 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
                 <div
                   className="px-5 md:px-6 text-[14px] md:text-base text-secondary overflow-hidden transition-all duration-300"
@@ -634,10 +670,12 @@ const ContactForm = () => {
       event_type: "CONVERSION",
       event_family: "CDP",
       payload: {
-        conversion_identifier: "lp-ark-google",
+        conversion_identifier: "GOOGLE ADS - LP",
+        traffic_source: "Google Ads",
         name: formData.fullName,
         email: formData.email,
         mobile_phone: formData.phone,
+        company_name: formData.companyName,
         cf_nome_da_empresa: formData.companyName,
         cf_qual_o_regime_tributario_da_sua_empresa: taxRegime,
         cf_quantos_funcionarios_sua_empresa_possui: employeeCount,
@@ -676,13 +714,17 @@ const ContactForm = () => {
       // Tentativa 2: SDK do RD (Para garantir que apareça em "formulários capturados")
       if (window.RdIntegration) {
         const sdkData = [
-          { name: 'conversion_identifier', value: 'lp-ark-google' },
+          { name: 'conversion_identifier', value: 'GOOGLE ADS - LP' },
           { name: 'email', value: formData.email },
           { name: 'name', value: formData.fullName },
           { name: 'page_url', value: window.location.href }
         ];
         window.RdIntegration.post(sdkData);
       }
+
+      // Dispara conversão no Google apenas para leads qualificados
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'conversion_qualified' });
 
       setStatus('success');
 
@@ -706,7 +748,7 @@ const ContactForm = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
         <FadeUpText className="text-center md:text-left">
           <h2 className="text-[36px] md:text-6xl font-bold text-white mb-6 md:mb-8 leading-tight-compressed md:leading-tight">
-            Pronto para ver o <span className="text-accent italic">impacto real</span> na sua empresa?
+            Pronto para ver o <span className="text-accent-light italic">impacto real</span> na sua empresa?
           </h2>
           <p className="text-[15px] md:text-xl text-secondary mb-10 md:mb-12 leading-relaxed-body md:leading-relaxed">
             Preencha o formulário e nossa equipe técnica entrará em contato para agendar sua demonstração personalizada do ARK.
@@ -714,14 +756,14 @@ const ContactForm = () => {
 
           <div className="space-y-6 inline-block text-left">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent shrink-0"><Check className="w-5 h-5" /></div>
+              <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent-light shrink-0"><Check className="w-5 h-5" /></div>
               <div>
                 <div className="text-white font-bold text-sm md:text-base">Diagnóstico em tempo real</div>
                 <div className="text-secondary text-xs md:text-sm">Usamos seus dados para mostrar a realidade.</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent shrink-0"><Check className="w-5 h-5" /></div>
+              <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent-light shrink-0"><Check className="w-5 h-5" /></div>
               <div>
                 <div className="text-white font-bold text-sm md:text-base">Equipe Especializada</div>
                 <div className="text-secondary text-xs md:text-sm">Fale com quem entende de tributário e tecnologia.</div>
@@ -734,7 +776,7 @@ const ContactForm = () => {
           {status === 'success' ? (
             <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in duration-500">
               <div className="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mb-6">
-                <CheckCircle2 className="w-10 h-10 text-accent" />
+                <CheckCircle2 className="w-10 h-10 text-accent-light" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-4">Recebemos seu contato!</h3>
               <p className="text-secondary mb-8 max-w-sm">
@@ -742,7 +784,7 @@ const ContactForm = () => {
               </p>
               <button
                 onClick={() => setStatus('idle')}
-                className="text-accent hover:underline font-medium"
+                className="text-accent-light hover:underline font-medium"
               >
                 Enviar outra mensagem
               </button>
@@ -763,16 +805,16 @@ const ContactForm = () => {
                   setEmployeeCount('');
                   setStatus('idle');
                 }}
-                className="text-accent hover:underline font-medium"
+                className="text-accent-light hover:underline font-medium"
               >
                 Voltar ao formulário
               </button>
             </div>
           ) : (
-            <form id="lp-form-vocare" action="/conversion" onSubmit={handleSubmit} className="space-y-6">
+            <form id="lp-form-vocare" onSubmit={handleSubmit} className="space-y-6">
               {/* Contact Info Group */}
               <div className="space-y-4">
-                <h4 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h4>
+                <h3 className="text-white/60 text-sm font-medium uppercase tracking-wider">Informações para contato</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label htmlFor="fullName" className="text-sm font-medium text-white/80">Nome Completo</label>
@@ -783,7 +825,7 @@ const ContactForm = () => {
                       required
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/50"
                       placeholder="Como podemos te chamar?"
                     />
                   </div>
@@ -797,7 +839,7 @@ const ContactForm = () => {
                       maxLength={11}
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/50"
                       placeholder="Somente números (11 dígitos)"
                     />
                   </div>
@@ -811,7 +853,7 @@ const ContactForm = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/50"
                     placeholder="seu@email.com.br"
                   />
                 </div>
@@ -867,7 +909,7 @@ const ContactForm = () => {
                   required
                   value={formData.companyName}
                   onChange={handleInputChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/20"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/50"
                   placeholder="Razão social ou nome fantasia"
                 />
               </div>
@@ -906,7 +948,7 @@ const Footer = () => {
   return (
     <footer className="bg-surface pt-20 pb-12 px-5 md:px-12 xl:px-24 border-t border-white/5">
       <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
-        <img src="logo.png" alt="ARK" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
+        <img src="logo.webp" alt="ARK" width="113" height="32" className="h-8 md:h-10 mb-4 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
         <div className="hidden font-bold text-3xl md:text-4xl tracking-tighter text-white mb-4">ARK</div>
         <p className="text-[14px] md:text-base text-secondary max-w-sm mb-12 leading-relaxed-body md:leading-relaxed">
           Descubra o impacto real na sua empresa.<br />Preencha os dados para simular quanto a Reforma Tributária pode aumentar ou reduzir sua carga.

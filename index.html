@@ -1,22 +1,41 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5M9DBVFP');</script>
+    <!-- Google Tag Manager (carregamento adiado para performance) -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    (function(w,d,s,l,i){
+      var loaded = false;
+      function loadGTM(){
+        if (loaded) return; loaded = true;
+        w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+        var f=d.getElementsByTagName(s)[0], j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+        f.parentNode.insertBefore(j,f);
+      }
+      var evts = ['scroll','mousemove','touchstart','keydown','click'];
+      function trigger(){ loadGTM(); evts.forEach(function(e){ w.removeEventListener(e, trigger); }); }
+      evts.forEach(function(e){ w.addEventListener(e, trigger, { passive: true }); });
+      // Carrega somente na primeira interação do usuário (scroll/clique/toque/tecla).
+      // Visitantes reais interagem antes de converter, então a conversão é preservada.
+    })(window,document,'script','dataLayer','GTM-5M9DBVFP');
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reforma Tributária | ARK</title>
-    <script type="text/javascript" async src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/5ea9cecb70c7e3c3c4855778cc9e081a-static.js"></script>
-    <!-- Google Fonts -->
+    <!-- Google Fonts (async — não bloqueia renderização) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
+    <!-- Sem JS: garante que o conteúdo animado fique visível -->
+    <noscript><style>.reveal,.reveal-group>*,.hero-anim{opacity:1!important;transform:none!important;animation:none!important}</style></noscript>
   </head>
   <body class="bg-background text-primary antialiased overflow-x-hidden selection:bg-accent selection:text-white">
     <!-- Google Tag Manager (noscript) -->
@@ -25,6 +44,6 @@
     <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script async src="//www.instagram.com/embed.js"></script>
+    <script type="text/javascript" defer src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/5ea9cecb70c7e3c3c4855778cc9e081a-static.js"></script>
   </body>
 </html>
