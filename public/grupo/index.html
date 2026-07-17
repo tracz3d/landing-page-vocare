@@ -226,7 +226,14 @@
           text-align: left;
         }
         .logo { height: 24px; }
-        .badge { padding: 8px 13px; font-size: 12px; }
+        /* três badges lado a lado numa única linha, dividindo a largura igualmente */
+        .badges { flex-wrap: nowrap; gap: 7px; }
+        .badge {
+          flex: 1 1 0; min-width: 0; justify-content: center;
+          padding: 9px 6px; font-size: clamp(10px, 3vw, 13px);
+          gap: 6px; white-space: nowrap;
+        }
+        .badge svg { display: none; } /* ícones só no desktop, onde há espaço */
         .cta { max-width: 100%; }
       }
 
