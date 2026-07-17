@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RT na Prática · ARK by Vocare Tech</title>
+    <meta name="description" content="Preencha o formulário para baixar seu arquivo." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Google Fonts (async) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+
+    <style>
+      :root {
+        --background: #0A0F14;
+        --surface: #141F28;
+        --primary: #DDE3ED;
+        --secondary: #9DA9BA;
+        --accent: #1E64BA;
+        --accent-light: #4D8FD6;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+        color: var(--primary);
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 20px;
+        background:
+          radial-gradient(ellipse 90% 55% at 50% 0%, rgba(30,100,186,0.20), transparent 70%),
+          var(--background);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      .wrap {
+        width: 100%;
+        max-width: 460px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .logo { height: 30px; width: auto; object-fit: contain; margin-bottom: 26px; }
+      .headline {
+        font-size: clamp(19px, 5.2vw, 24px);
+        font-weight: 700;
+        line-height: 1.3;
+        text-align: center;
+        margin-bottom: 28px;
+        max-width: 24ch;
+      }
+
+      .card {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 28px;
+        padding: clamp(22px, 6vw, 36px);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+      }
+      .field { margin-bottom: 18px; }
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.80);
+        margin-bottom: 8px;
+      }
+      input {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 12px;
+        padding: 13px 16px;
+        color: #fff;
+        font-family: inherit;
+        font-size: 15px;
+        transition: border-color .2s, box-shadow .2s;
+      }
+      input::placeholder { color: rgba(255,255,255,0.35); }
+      input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(30,100,186,0.45);
+      }
+
+      /* Botões segmentados (Empresário / Contador) — sem título de pergunta */
+      .seg {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .seg button {
+        padding: 13px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.05);
+        color: rgba(255,255,255,0.60);
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all .2s;
+      }
+      .seg button:hover { background: rgba(255,255,255,0.10); }
+      .seg button.selected {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .submit {
+        width: 100%;
+        height: 54px;
+        border: none;
+        border-radius: 100px;
+        background: var(--accent);
+        color: #fff;
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: .02em;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background-color .2s, transform .2s;
+      }
+      .submit:hover { background: #2571ce; transform: translateY(-1px); }
+      .submit:active { transform: translateY(0); }
+      .submit svg { width: 20px; height: 20px; }
+      .err {
+        color: #ff8a8a;
+        font-size: 13px;
+        margin-top: 12px;
+        text-align: center;
+        min-height: 16px;
+      }
+
+      /* Estado de sucesso */
+      .success { text-align: center; display: none; }
+      .success .check {
+        width: 64px; height: 64px; margin: 0 auto 18px;
+        border-radius: 50%;
+        background: rgba(30,100,186,0.18);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--accent-light);
+      }
+      .success h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+      .success p { font-size: 14px; color: var(--secondary); line-height: 1.6; margin-bottom: 18px; }
+      .success a { color: var(--accent-light); font-weight: 600; text-decoration: none; }
+      .success a:hover { text-decoration: underline; }
+
+      @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) { .wrap { animation: none; } .submit { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <img class="logo" src="/logo.webp" alt="ARK by Vocare Tech" width="113" height="32" />
+      <h1 class="headline">Preencha o formulário para baixar seu arquivo</h1>
+
+      <div class="card">
+        <form id="form" novalidate>
+          <div class="field">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" required autocomplete="name" placeholder="Seu nome completo" />
+          </div>
+          <div class="field">
+            <label for="telefone">Telefone</label>
+            <input id="telefone" name="telefone" type="tel" required autocomplete="tel" inputmode="numeric" placeholder="Somente números (com DDD)" />
+          </div>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" required autocomplete="email" placeholder="seu@email.com.br" />
+          </div>
+
+          <div class="seg" role="group" aria-label="Perfil">
+            <button type="button" data-perfil="Empresário">Empresário</button>
+            <button type="button" data-perfil="Contador">Contador</button>
+          </div>
+
+          <button type="submit" class="submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Baixe seu arquivo
+          </button>
+          <p class="err" id="err"></p>
+        </form>
+
+        <div class="success" id="success">
+          <div class="check">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2>Seu download começou!</h2>
+          <p>Se o download não iniciar automaticamente, <a id="manualDownload" href="/ARK%20-%203%20de%20Agosto.pdf" download="ARK - 3 de Agosto.pdf">clique aqui para baixar</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var RD_URL = 'https://api.rd.services/platform/conversions?api_key=5ea9cecb70c7e3c3c4855778cc9e081a';
+        var FILE_URL = '/ARK%20-%203%20de%20Agosto.pdf';
+        var FILE_NAME = 'ARK - 3 de Agosto.pdf';
+
+        var form = document.getElementById('form');
+        var success = document.getElementById('success');
+        var err = document.getElementById('err');
+        var nome = document.getElementById('nome');
+        var telefone = document.getElementById('telefone');
+        var email = document.getElementById('email');
+        var perfil = '';
+
+        // seleção do perfil (Empresário / Contador)
+        var segBtns = document.querySelectorAll('.seg button');
+        segBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            perfil = btn.getAttribute('data-perfil');
+            segBtns.forEach(function (b) { b.classList.toggle('selected', b === btn); });
+            err.textContent = '';
+          });
+        });
+
+        // telefone: apenas dígitos, máx. 11
+        telefone.addEventListener('input', function () {
+          telefone.value = telefone.value.replace(/\D/g, '').slice(0, 11);
+        });
+
+        function sendToRD() {
+          var payload = {
+            event_type: 'CONVERSION',
+            event_family: 'CDP',
+            payload: {
+              conversion_identifier: 'RT NA PRATICA',
+              name: nome.value.trim(),
+              email: email.value.trim(),
+              mobile_phone: telefone.value.trim(),
+              cf_perfil: perfil,
+              page_title: document.title,
+              page_url: window.location.href,
+              cf_url_da_pagina: window.location.href
+            }
+          };
+          var body = JSON.stringify(payload);
+          // envio principal (CORS); se falhar, fallback no-cors. keepalive garante a entrega.
+          fetch(RD_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: body,
+            keepalive: true
+          }).then(function (r) {
+            if (!r.ok && r.status !== 201) throw new Error('rd');
+          }).catch(function () {
+            fetch(RD_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true });
+          });
+        }
+
+        function triggerDownload() {
+          var a = document.createElement('a');
+          a.href = FILE_URL;
+          a.download = FILE_NAME;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!nome.value.trim() || !telefone.value.trim() || !email.value.trim()) {
+            err.textContent = 'Preencha nome, telefone e e-mail.';
+            return;
+          }
+          if (!email.checkValidity()) { err.textContent = 'Informe um e-mail válido.'; return; }
+          if (!perfil) { err.textContent = 'Selecione Empresário ou Contador.'; return; }
+
+          sendToRD();          // envia ao RD (em segundo plano)
+          triggerDownload();   // baixa o arquivo imediatamente
+
+          form.style.display = 'none';
+          success.style.display = 'block';
+        });
+      })();
+    </script>
+  </body>
+</html>
