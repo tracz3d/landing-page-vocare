@@ -63,22 +63,34 @@
         z-index: 0;
         overflow: hidden;
         pointer-events: none;
+        /* máscara no CONTAINER: imagem + véus fundem juntos no navy (sem borda de overlay) */
+        -webkit-mask-image: linear-gradient(90deg,
+          transparent 0%, rgba(0,0,0,.03) 6%, rgba(0,0,0,.09) 12%, rgba(0,0,0,.18) 18%,
+          rgba(0,0,0,.30) 24%, rgba(0,0,0,.45) 30%, rgba(0,0,0,.61) 36%, rgba(0,0,0,.76) 42%,
+          rgba(0,0,0,.89) 48%, rgba(0,0,0,.97) 54%, #000 60%);
+        mask-image: linear-gradient(90deg,
+          transparent 0%, rgba(0,0,0,.03) 6%, rgba(0,0,0,.09) 12%, rgba(0,0,0,.18) 18%,
+          rgba(0,0,0,.30) 24%, rgba(0,0,0,.45) 30%, rgba(0,0,0,.61) 36%, rgba(0,0,0,.76) 42%,
+          rgba(0,0,0,.89) 48%, rgba(0,0,0,.97) 54%, #000 60%);
       }
       .photo img {
         width: 100%; height: 100%;
         object-fit: cover;
-        object-position: top center;
-        opacity: .92;
-        /* funde a foto no navy pela esquerda e pela base */
-        -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
-        mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+        /* rosto à direita da zona de fusão; a esquerda da imagem é navy puro */
+        object-position: 35% 0%;
       }
       .photo::after {
         content: "";
         position: absolute; inset: 0;
         background:
-          linear-gradient(180deg, rgba(5,11,24,0) 55%, rgba(5,11,24,.92) 96%),
-          linear-gradient(90deg, rgba(5,11,24,.55) 0%, rgba(5,11,24,0) 45%);
+          linear-gradient(180deg,
+            rgba(5,11,24,0) 50%, rgba(5,11,24,.06) 60%, rgba(5,11,24,.16) 68%,
+            rgba(5,11,24,.32) 76%, rgba(5,11,24,.52) 84%, rgba(5,11,24,.72) 91%,
+            rgba(5,11,24,.88) 97%, rgba(5,11,24,.95) 100%),
+          linear-gradient(90deg,
+            rgba(5,11,24,.85) 0%, rgba(5,11,24,.68) 10%, rgba(5,11,24,.52) 20%,
+            rgba(5,11,24,.38) 30%, rgba(5,11,24,.25) 38%, rgba(5,11,24,.15) 45%,
+            rgba(5,11,24,.08) 51%, rgba(5,11,24,.03) 57%, rgba(5,11,24,0) 64%);
       }
       .caption {
         position: absolute;
@@ -181,13 +193,22 @@
           width: 100%;
           height: min(52vh, 430px);
         }
+        /* no mobile a máscara volta para a imagem (a legenda vive dentro de .photo) */
+        .photo { -webkit-mask-image: none; mask-image: none; }
         .photo img {
           object-position: center 18%;
-          -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
-          mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+          -webkit-mask-image: linear-gradient(180deg,
+            #000 50%, rgba(0,0,0,.93) 60%, rgba(0,0,0,.80) 68%, rgba(0,0,0,.62) 76%,
+            rgba(0,0,0,.42) 83%, rgba(0,0,0,.24) 89%, rgba(0,0,0,.10) 94%, transparent 100%);
+          mask-image: linear-gradient(180deg,
+            #000 50%, rgba(0,0,0,.93) 60%, rgba(0,0,0,.80) 68%, rgba(0,0,0,.62) 76%,
+            rgba(0,0,0,.42) 83%, rgba(0,0,0,.24) 89%, rgba(0,0,0,.10) 94%, transparent 100%);
         }
         .photo::after {
-          background: linear-gradient(180deg, rgba(5,11,24,.28) 0%, rgba(5,11,24,0) 30%, rgba(5,11,24,.9) 88%, #050b18 100%);
+          background: linear-gradient(180deg,
+            rgba(5,11,24,.28) 0%, rgba(5,11,24,.10) 16%, rgba(5,11,24,0) 30%,
+            rgba(5,11,24,0) 55%, rgba(5,11,24,.14) 68%, rgba(5,11,24,.36) 78%,
+            rgba(5,11,24,.62) 86%, rgba(5,11,24,.84) 93%, #050b18 100%);
         }
         .caption { right: 20px; bottom: 26px; }
         .content {
