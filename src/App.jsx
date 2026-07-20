@@ -48,14 +48,15 @@ const FadeUpGroup = ({ children, className = '' }) => {
 };
 
 const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
-  const [val, setVal] = useState(0);
   const ref = useRef(null);
+  const numRef = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    const numEl = numRef.current;
+    if (!el || !numEl) return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) { setVal(end); return; }
+    if (reduce) { numEl.textContent = String(end); return; }
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
@@ -65,7 +66,8 @@ const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
         const step = (now) => {
           const p = Math.min((now - start) / duration, 1);
           const eased = 1 - Math.pow(1 - p, 3); // equivalente a power3.out
-          setVal(Math.round(end * eased));
+          // escreve direto no DOM (sem setState) — evita re-render do React a cada frame (bom p/ INP)
+          numEl.textContent = String(Math.round(end * eased));
           if (p < 1) requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
@@ -76,7 +78,7 @@ const NumberTicker = ({ end, prefix = '', suffix = '', className = '' }) => {
     return () => obs.disconnect();
   }, [end]);
 
-  return <span ref={ref} className={className}>{prefix}{val}{suffix}</span>;
+  return <span ref={ref} className={className}>{prefix}<span ref={numRef}>0</span>{suffix}</span>;
 };
 
 // --- NAVBAR ---
