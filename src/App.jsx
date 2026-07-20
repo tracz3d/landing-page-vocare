@@ -645,16 +645,32 @@ const ContactForm = () => {
   const [employeeCount, setEmployeeCount] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
 
+  const resetForm = () => {
+    setFormData({ fullName: '', phone: '', email: '', companyName: '' });
+    setTaxRegime('');
+    setEmployeeCount('');
+    setStatus('idle');
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'phone' && value.length > 11) return;
-    
+
+    if (name === 'phone') {
+      // aceita apenas números, no máximo 11 dígitos
+      const digits = value.replace(/\D/g, '').slice(0, 11);
+      setFormData(prev => ({ ...prev, phone: digits }));
+      return;
+    }
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.phone.length < 9) {
+      alert('Informe um telefone válido (mínimo 9 números).');
+      return;
+    }
     if (!taxRegime || !employeeCount) {
       alert('Por favor, selecione o regime tributário e o número de funcionários.');
       return;
@@ -785,7 +801,7 @@ const ContactForm = () => {
                 Nossa equipe técnica já foi notificada e entrará em contato em breve para agendar sua demonstração.
               </p>
               <button
-                onClick={() => setStatus('idle')}
+                onClick={resetForm}
                 className="text-accent-light hover:underline font-medium"
               >
                 Enviar outra mensagem
@@ -801,12 +817,7 @@ const ContactForm = () => {
                 O ARK é desenvolvido para empresas em Lucro Presumido ou Lucro Real. Se tiver dúvidas, entre em contato com nossa equipe.
               </p>
               <button
-                onClick={() => {
-                  setFormData({ fullName: '', phone: '', email: '', companyName: '' });
-                  setTaxRegime('');
-                  setEmployeeCount('');
-                  setStatus('idle');
-                }}
+                onClick={resetForm}
                 className="text-accent-light hover:underline font-medium"
               >
                 Voltar ao formulário
@@ -837,12 +848,15 @@ const ContactForm = () => {
                       id="phone"
                       name="phone"
                       type="tel"
+                      inputMode="numeric"
+                      pattern="\d*"
                       required
+                      minLength={9}
                       maxLength={11}
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-accent transition-all placeholder:text-white/50"
-                      placeholder="Somente números (11 dígitos)"
+                      placeholder="Somente números (com DDD)"
                     />
                   </div>
                 </div>
