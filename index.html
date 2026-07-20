@@ -14,9 +14,15 @@
         f.parentNode.insertBefore(j,f);
       }
       var evts = ['scroll','mousemove','touchstart','keydown','click'];
-      function trigger(){ loadGTM(); evts.forEach(function(e){ w.removeEventListener(e, trigger); }); }
+      var idle = w.requestIdleCallback || function(cb){ return w.setTimeout(cb, 1); };
+      function trigger(){
+        // remove listeners na hora (barato) e adia o carregamento do GTM para o ocioso,
+        // pra não competir com a própria interação do usuário (melhora o INP).
+        evts.forEach(function(e){ w.removeEventListener(e, trigger); });
+        idle(loadGTM, { timeout: 3000 });
+      }
       evts.forEach(function(e){ w.addEventListener(e, trigger, { passive: true }); });
-      // Carrega somente na primeira interação do usuário (scroll/clique/toque/tecla).
+      // Carrega na primeira interação do usuário (scroll/clique/toque/tecla), em tempo ocioso.
       // Visitantes reais interagem antes de converter, então a conversão é preservada.
     })(window,document,'script','dataLayer','GTM-5M9DBVFP');
     </script>
