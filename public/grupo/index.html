@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
+    <!-- Google Tag Manager (carregamento adiado para performance) -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    (function(w,d,s,l,i){
+      var loaded = false;
+      function loadGTM(){
+        if (loaded) return; loaded = true;
+        w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+        var f=d.getElementsByTagName(s)[0], j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+        f.parentNode.insertBefore(j,f);
+      }
+      var evts = ['scroll','mousemove','touchstart','keydown','click'];
+      var idle = w.requestIdleCallback || function(cb){ return w.setTimeout(cb, 1); };
+      function trigger(){
+        evts.forEach(function(e){ w.removeEventListener(e, trigger); });
+        idle(loadGTM, { timeout: 3000 });
+      }
+      evts.forEach(function(e){ w.addEventListener(e, trigger, { passive: true }); });
+    })(window,document,'script','dataLayer','GTM-5M9DBVFP');
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grupo Exclusivo · ARK by Vocare Tech</title>
@@ -244,6 +266,9 @@
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5M9DBVFP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div class="page">
       <img class="logo" src="/logo.webp" alt="ARK by Vocare Tech" width="113" height="32" data-anim style="--i:0" />
 
