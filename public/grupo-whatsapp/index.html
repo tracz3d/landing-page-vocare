@@ -174,6 +174,17 @@
       }
       .form-err { color: #ff8a8a; font-size: 13px; margin-top: 10px; min-height: 16px; }
 
+      /* Confirmação após envio */
+      .form-ok { display: none; max-width: 460px; }
+      .form-ok .ok-check {
+        width: 60px; height: 60px; border-radius: 50%;
+        background: rgba(79,143,247,.18); color: var(--hl);
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 18px;
+      }
+      .form-ok h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; margin-bottom: 10px; }
+      .form-ok p { font-size: 15px; line-height: 1.6; color: var(--text-dim); }
+
       .cta {
         display: inline-flex; align-items: center; justify-content: center; gap: 11px;
         width: 100%; max-width: 420px;
@@ -289,6 +300,14 @@
           </button>
           <p class="form-err" id="err"></p>
         </form>
+
+        <div class="form-ok" id="success">
+          <div class="ok-check">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2>Recebemos seus dados!</h2>
+          <p>Prontinho — seu contato foi registrado. Em breve você será adicionado ao grupo.</p>
+        </div>
       </main>
     </div>
 
@@ -296,9 +315,9 @@
       (function () {
         // URL do Web App do Google Apps Script (grava os leads na planilha)
         var SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyk4wBcsoX9p7C3W_tLVT-RKryeIrNbjqGb1QeSPGATn0KaYCiSfpJ_06Hmj-Kfx1fEPw/exec';
-        var WHATSAPP_URL = 'https://chat.whatsapp.com/GVO3oX3YWmlECudoef0zIK';
 
         var form = document.getElementById('grupoForm');
+        var success = document.getElementById('success');
         var nome = document.getElementById('nome');
         var tel = document.getElementById('telefone');
         var err = document.getElementById('err');
@@ -327,11 +346,14 @@
                 }),
                 keepalive: true
               });
-            } catch (err2) { /* ignora — segue para o grupo mesmo assim */ }
+            } catch (err2) { /* ignora */ }
           }
 
-          // entra no grupo do WhatsApp
-          window.location.href = WHATSAPP_URL;
+          // limpa os campos e mostra confirmação (NÃO redireciona)
+          form.reset();
+          err.textContent = '';
+          form.style.display = 'none';
+          success.style.display = 'block';
         });
       })();
     </script>
