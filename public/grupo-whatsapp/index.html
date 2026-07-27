@@ -136,6 +136,15 @@
         margin-bottom: 28px;
       }
       .hl { color: var(--hl); font-weight: 700; }
+      .lead {
+        font-size: clamp(15px, 1.9vw, 18px);
+        font-weight: 400;
+        line-height: 1.65;
+        color: var(--text-dim);
+        max-width: 52ch;
+        margin-bottom: 26px;
+      }
+      .lead .hl { font-weight: 600; }
 
       /* ===== Formulário (design system ARK) ===== */
       .grupo-form { width: 100%; max-width: 420px; }
@@ -260,7 +269,12 @@
       <main class="content">
         <h1 data-anim style="--i:2">Faça parte do <span class="hl">grupo exclusivo</span> de Adriano Subirá.</h1>
 
-        <form id="grupoForm" class="grupo-form" novalidate data-anim style="--i:3">
+        <p class="lead" data-anim style="--i:3">
+          Tenha <span class="hl">acesso antecipado</span> à nova funcionalidade do ARK para Simples Nacional
+          e torne-se <span class="hl">precursor</span> na venda de consultorias tributárias.
+        </p>
+
+        <form id="grupoForm" class="grupo-form" novalidate data-anim style="--i:4">
           <div class="field">
             <label for="nome">Nome</label>
             <input id="nome" name="nome" type="text" required autocomplete="name" placeholder="Seu nome completo" />
@@ -280,8 +294,8 @@
 
     <script>
       (function () {
-        // === COLE AQUI a URL do Web App do Google Apps Script (termina em /exec) ===
-        var SHEETS_ENDPOINT = '';
+        // URL do Web App do Google Apps Script (grava os leads na planilha)
+        var SHEETS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyk4wBcsoX9p7C3W_tLVT-RKryeIrNbjqGb1QeSPGATn0KaYCiSfpJ_06Hmj-Kfx1fEPw/exec';
         var WHATSAPP_URL = 'https://chat.whatsapp.com/GVO3oX3YWmlECudoef0zIK';
 
         var form = document.getElementById('grupoForm');
